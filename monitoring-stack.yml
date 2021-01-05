@@ -1,0 +1,27 @@
+- hosts: all
+  become: true
+  vars:
+    docker_network_name: monitoring-network
+
+  tasks:
+    - name: Create docker net
+      docker_network:
+        name: "{{ docker_network_name }}"
+        state: present
+
+    - name: Pull prometheus docker image
+      docker_image:
+        name: prom/prometheus:v2.22.0
+        source: pull
+        state: present
+
+    - name: Run prometheus
+      docker_container:
+        name: prometheus
+        image: prom/prometheus:v2.22.0
+        networks:
+        - name: "{{ docker_network_name }}"
+          aliases:
+            - prometheus
+        ports:
+        - '9090:9090'
