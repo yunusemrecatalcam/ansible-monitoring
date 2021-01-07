@@ -4,15 +4,15 @@
     docker_network_name: monitoring-network
 
   tasks:
-    - name: Pull prometheus docker image
+    - name: Pull node-exporter docker image
       docker_image:
-        name: prom/prometheus:v2.22.0
+        name: prom/node-exporter:v1.0.0
         source: pull
         state: present
 
     - name: Run prometheus
       docker_container:
-        name: nodee-exporter
+        name: node-exporter
         image: prom/node-exporter:v1.0.0
         networks:
         - name: "{{ docker_network_name }}"

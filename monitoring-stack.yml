@@ -48,5 +48,6 @@
         user: "root"
         volumes:
           - "{{ prometheus_volume_base }}/config/prometheus.yaml:/etc/prometheus/prometheus.yml"
+          - "{{ prometheus_volume_base }}/data:/data"
         ports:
         - '9090:9090'
