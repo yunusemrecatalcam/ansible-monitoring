@@ -1,0 +1,44 @@
+- hosts: all
+  become: true
+  vars:
+    docker_network_name: monitoring-network
+    prometheus_volume_base: /home/yech/prom-volume
+
+  tasks:
+    - name: Create grafana config directory
+      file:
+        state: directory
+        path: "{{ prometheus_volume_base }}/grafana-config"
+
+    - name: Create grafana config directory
+      file:
+        state: directory
+        path: "{{ prometheus_volume_base }}/grafana-data"
+
+    - name: Copy Grafana config files
+      copy:
+        src: ./utils/grafana-datasources.yaml
+        dest: "{{ prometheus_volume_base }}/grafana-config/grafana-datasources.yaml"
+
+    - name: Pull grafana docker image
+      docker_image:
+        name: grafana/grafana:7.0.0
+        source: pull
+        state: present
+
+    - name: Run grafana
+      docker_container:
+        name: grafana
+        image: grafana/grafana:7.0.0
+        recreate: true
+        restart_policy: always
+        networks:
+        - name: "{{ docker_network_name }}"
+          aliases:
+            - grafana
+        user: "root"
+        ports:
+          - '3000:3000'
+        volumes:
+          - "{{ prometheus_volume_base }}/grafana-config/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml"
+          - "{{ prometheus_volume_base }}/grafana-data:/var/lib/grafana"
