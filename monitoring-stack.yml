@@ -39,6 +39,8 @@
       docker_container:
         name: prometheus
         image: prom/prometheus:v2.22.0
+        recreate: true
+        restart_policy: always
         networks:
         - name: "{{ docker_network_name }}"
           aliases:
