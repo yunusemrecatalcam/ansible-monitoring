@@ -5,5 +5,5 @@ docker-py installed
 Run playbook
 
 ````
-ansible-playbook -i inventory monitorin-stack.yml
+ansible-playbook -i inventory node-exporter.yml -e where=test
 ````
